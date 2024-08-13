@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Julia Fractals</title>
+    <style>
+        body {
+            background: black;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Courier New', monospace; /* Monospace font for console-like look */
+        }
+        #header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #profile {
+            border-radius: 50%;
+            width: 60px; /* Adjust size as needed */
+            height: 60px; /* Adjust size as needed */
+            border: 2px solid white;
+            margin-right: 10px;
+        }
+        #username {
+            color: white;
+            font-size: 24px;
+            font-family: 'Courier New', monospace; /* Monospace font */
+            transition: text-shadow 0.3s ease;
+        }
+        #username:hover {
+            text-shadow: 0 0 10px lightblue;
+        }
+        #title {
+            color: white;
+            font-size: 28px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace; /* Monospace font */
+        }
+        canvas {
+            border: 1px solid white;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.6.0/math.min.js"></script>
+</head>
+<body>
+    <div id="header">
+        <img id="profile" src="" alt="Profile Picture">
+        <div id="username">BLUE_</div>
+    </div>
+  
+    <canvas></canvas>
+    <div id="title">Julia Fractals Generator</div>
+    <script>
+        var header = document.querySelector('h2');
+        var canvas = document.querySelector('canvas');
+        var ctx = canvas.getContext('2d');
+
+        var width = 800;
+        var height = 600;
+
+        canvas.width = width;
+        canvas.height = height;
+
+        var mouseX = 0;
+        var mouseY = 0;
+
+        var constant = math.complex(0.28, 0.01);
+        var maxIterations = 64;
+        var clicked = false;
+        var pan = math.complex(0, 0);
+
+        function julia(z, i = 0) {
+            z = z.mul(z);
+            z = z.add(constant);
+            if (math.abs(z) > 2 || i == maxIterations) {
+                return i;
+            } else {
+                return julia(z, i + 1);
+            }
+        }
+
+        function pointToColor(point) {
+            var iterations = julia(point);
+            var percentage = iterations / maxIterations;
+            var brightness = Math.floor(255 * (1 - percentage));
+            return `rgb(${brightness}, ${brightness}, ${brightness})`;
+        }
+
+        function pixelToPoint(x, y) {
+            var zx = (x / width) * 2 - 1;
+            var zy = 1 - (y / height) * 2;
+            var z = math.complex(zx, zy);
+            z = z.add(pan);
+            return z;
+        }
+
+        function drawPixel(x, y, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, 1, 1);
+        }
+
+        function draw() {
+            for (var y = 0; y < height; y++) {
+                for (var x = 0; x < width; x++) {
+                    var point = pixelToPoint(x, y);
+                    var color = pointToColor(point);
+                    drawPixel(x, y, color);
+                }
+            }
+        }
+
+        function update() {
+            header.innerHTML = constant.toString();
+            draw();
+        }
+
+        function click(event) {
+            if (!clicked) {
+                clicked = true;
+                return;
+            }
+            mouseX = event.clientX - canvas.offsetLeft;
+            mouseY = event.clientY - canvas.offsetTop;
+            pan = pixelToPoint(mouseX, mouseY);
+            update();
+        }
+
+        function move(event) {
+            if (clicked) {
+                return;
+            }
+            mouseX = event.clientX - canvas.offsetLeft;
+            mouseY = event.clientY - canvas.offsetTop;
+            constant = pixelToPoint(mouseX, mouseY);
+            constant.re = Math.round(constant.re * 100) / 100;
+            constant.im = Math.round(constant.im * 100) / 100;
+            update();
+        }
+
+        canvas.addEventListener('click', click);
+        canvas.addEventListener('pointermove', move);
+        update();
+    </script>
+</body>
+</html>
