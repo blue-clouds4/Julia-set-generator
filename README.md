@@ -11,6 +11,6 @@ but the magic it does
 i still done understand how the number works,i implemented the calculation and visualised them on a complex plane
 ---
 ## the website:
-[ineedsleep](https://blue-clouds4.github.io/Julia-set-generator/)
+[reallybad](https://bleu-harsha.github.io/Julia-set-generator/)
 <br>
 
