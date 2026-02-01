@@ -8,7 +8,6 @@ but the magic it does
 
 ![image](https://github.com/user-attachments/assets/edb26b74-6e3c-41a4-a95e-093fbe688b5b)
 
-i still done understand how the number works,i implemented the calculation and visualised them on a complex plane
 ---
 ## the website:
 [reallybad](https://bleu-harsha.github.io/Julia-set-generator/)
